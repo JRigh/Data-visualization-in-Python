@@ -92,6 +92,39 @@ plt.title('Scatterplot with regression lines by Species')
 # end
 #----
 
+
+#-----------------
+# Time series plot
+#-----------------
+
+
+import matplotlib.pyplot as plt
+import datetime
+import numpy as np
+import pandas as pd
+
+#define data
+df = pd.DataFrame({'date': np.array([datetime.datetime(2020, 1, i+1)
+                                     for i in range(12)]),
+                   'sales': [3, 4, 4, 7, 8, 9, 14, 17, 12, 8, 8, 13]})
+
+df2 = pd.DataFrame({'date': np.array([datetime.datetime(2020, 1, i+1)
+                                      for i in range(12)]),
+                   'returns': [1, 1, 2, 3, 3, 3, 4, 3, 2, 3, 4, 7]})
+
+#plot both time series
+plt.figure(figsize=(5, 4))
+plt.plot(df.date, df.sales, label='sales', linewidth=3)
+plt.plot(df2.date, df2.returns, color='red', label='returns', linewidth=3)
+plt.title('Sales by Date')
+plt.xlabel('Date',fontsize=8)
+plt.ylabel('Sales', fontsize=8)
+plt.show() 
+
+#----
+# end
+#----
+
 #----------------------------------------
 # Histogram with Kernel Density Estimator
 #----------------------------------------
