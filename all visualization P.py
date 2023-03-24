@@ -168,3 +168,24 @@ plot
 #----
 # end
 #----
+
+#------------------
+# Multiple boxplots
+#------------------
+
+# on complete iris dataframe
+
+sns.set(style="ticks", palette="pastel")
+f, axes = plt.subplots(2, 2, sharey=False, figsize=(8, 6))
+f, axes = plt.subplots(2, 2, sharey=False, figsize=(8, 6))
+sns.boxplot(x="species", y="petal length (cm)",data=iris, ax = axes[0,0])
+sns.boxplot(x="species", y="sepal length (cm)", data=iris, ax=axes[0,1])
+sns.boxplot(x="species", y="petal width (cm)",hue = "species",data=iris, ax=axes[1,0])
+sns.boxplot(x="species", y="sepal width (cm)", data=iris, ax=axes[1,1])
+# adding a title to the plot
+f.suptitle("Boxplot on iris dataset")
+plt.show()
+
+#----
+# end
+#----
