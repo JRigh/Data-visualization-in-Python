@@ -45,6 +45,53 @@ plt.show()
 # end
 #----
 
+
+#-------------------------------------------
+# Scatterplot with regression lines by group
+#-------------------------------------------
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn import datasets
+import pandas as pd
+import numpy as np
+
+# Convert 'iris.data' numpy array to 'iris.dataframe' pandas dataframe
+# complete the iris dataset by adding species
+iris = datasets.load_iris()
+iris = pd.DataFrame(
+    data= np.c_[iris['data'], iris['target']],
+    columns= iris['feature_names'] + ['target']
+    )
+
+species = []
+
+for i in range(len(iris['target'])):
+    if iris['target'][i] == 0:
+        species.append("setosa")
+    elif iris['target'][i] == 1:
+        species.append('versicolor')
+    else:
+        species.append('virginica')
+
+
+iris['species'] = species
+iris
+
+# add regression line per group Seaborn
+sns.lmplot(x="sepal length (cm)", 
+           y="sepal width (cm)", 
+           hue="species",
+           data=iris,
+           height=5)
+plt.xlabel("sepal length (cm)")
+plt.ylabel("sepal width (cm)")
+plt.title('Scatterplot with regression lines by Species')
+
+#----
+# end
+#----
+
 #----------------------------------------
 # Histogram with Kernel Density Estimator
 #----------------------------------------
