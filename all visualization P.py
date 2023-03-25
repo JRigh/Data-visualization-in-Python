@@ -238,6 +238,50 @@ sns.jointplot(data=iris, x="sepal length (cm)", y="sepal width (cm)", hue="speci
 # end
 #----
 
+#------------------------------------------------------------------
+# Scatterplot with marginal densities and regression lines by group
+#------------------------------------------------------------------
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn import datasets
+import pandas as pd
+import numpy as np
+
+
+# Convert 'iris.data' numpy array to 'iris.dataframe' pandas dataframe
+# complete the iris dataset by adding species
+iris = datasets.load_iris()
+iris = pd.DataFrame(
+    data= np.c_[iris['data'], iris['target']],
+    columns= iris['feature_names'] + ['target']
+    )
+
+species = []
+
+for i in range(len(iris['target'])):
+    if iris['target'][i] == 0:
+        species.append("setosa")
+    elif iris['target'][i] == 1:
+        species.append('versicolor')
+    else:
+        species.append('virginica')
+
+
+iris['species'] = species
+iris
+
+pal = sns.color_palette(n_colors=3)
+g = sns.jointplot(data=iris, x='sepal length (cm)', y='sepal width (cm)', hue='species', hue_order=['setosa', 'versicolor', 'virginica'], palette=pal)
+
+for species, color in zip(['setosa', 'versicolor', 'virginica'], pal):
+    sns.regplot(data=iris[iris['species'] == species], x='sepal length (cm)', y='sepal width (cm)', color=color, truncate=False, ax=g.ax_joint)
+plt.show()
+
+#----
+# end
+#----
+
 #-----------------
 # Time series plot
 #-----------------
