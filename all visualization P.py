@@ -92,6 +92,151 @@ plt.title('Scatterplot with regression lines by Species')
 # end
 #----
 
+#---------------------------------------------
+# Scatterplot with marginal densities by group
+#---------------------------------------------
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn import datasets
+import pandas as pd
+import numpy as np
+from matplotlib import gridspec
+from scipy import stats
+
+# Convert 'iris.data' numpy array to 'iris.dataframe' pandas dataframe
+# complete the iris dataset by adding species
+iris = datasets.load_iris()
+iris = pd.DataFrame(
+    data= np.c_[iris['data'], iris['target']],
+    columns= iris['feature_names'] + ['target']
+    )
+
+species = []
+
+for i in range(len(iris['target'])):
+    if iris['target'][i] == 0:
+        species.append("setosa")
+    elif iris['target'][i] == 1:
+        species.append('versicolor')
+    else:
+        species.append('virginica')
+
+
+iris['species'] = species
+iris
+
+cl = ['r','g', 'b'] # Custom list of colours for each categories - increase as needed...
+
+headers = list(iris.columns) # Extract list of column headers
+# Find min and max values for all x (= col [0]) and y (= col [1]) in dataframe:
+xmin, xmax = iris.min(axis=0)[0], iris.max(axis=0)[0]
+ymin, ymax = iris.min(axis=0)[1], iris.max(axis=0)[1]
+# Create a list of all unique categories which occur in the right hand column (ie index '2'):
+category_list = iris.iloc[:,5].unique()
+category_list
+
+# Set up 4 subplots and aspect ratios as axis objects using GridSpec:
+gs = gridspec.GridSpec(2, 2, width_ratios=[6,2], height_ratios=[2,6])
+# Add space between scatter plot and KDE plots to accommodate axis labels:
+gs.update(hspace=0.3, wspace=0.3)
+
+fig = plt.figure() # Set background canvas colour to White instead of grey default
+fig.patch.set_facecolor('white')
+
+ax = plt.subplot(gs[1,0]) # Instantiate scatter plot area and axis range
+ax.set_xlim(xmin, xmax)
+ax.set_ylim(ymin, ymax)
+ax.set_xlabel(headers[0], fontsize = 10)
+ax.set_ylabel(headers[1], fontsize = 10)
+ax.yaxis.labelpad = 10 # adjust space between x and y axes and their labels if needed
+
+axl = plt.subplot(gs[1,1], sharey=ax) # Instantiate left KDE plot area
+axl.get_xaxis().set_visible(False) # Hide tick marks and spines
+axl.get_yaxis().set_visible(False)
+axl.spines["right"].set_visible(False)
+axl.spines["top"].set_visible(False)
+axl.spines["bottom"].set_visible(False)
+
+axb = plt.subplot(gs[0,0], sharex=ax) # Instantiate bottom KDE plot area
+axb.get_xaxis().set_visible(False) # Hide tick marks and spines
+axb.get_yaxis().set_visible(False)
+axb.spines["right"].set_visible(False)
+axb.spines["top"].set_visible(False)
+axb.spines["left"].set_visible(False)
+
+axc = plt.subplot(gs[0,1]) # Instantiate legend plot area
+axc.axis('off') # Hide tick marks and spines
+
+# For each category in the list...
+for n in range(0, len(category_list)):
+# Create a sub-table containing only entries matching current category:
+    st = iris.loc[iris[headers[5]] == category_list[n]]
+    # Select first two columns of sub-table as x and y values to be plotted:
+    x = st[headers[0]]
+    y = st[headers[1]]
+
+    # Plot data for each categorical variable as scatter and marginal KDE plots:    
+    ax.scatter(x,y, color='none', s=100, edgecolor= cl[n], label = category_list[n], alpha = 0.4)
+
+    kde = stats.gaussian_kde(x)
+    xx = np.linspace(xmin, xmax, 1000)
+    axb.plot(xx, kde(xx), color=cl[n], alpha = 0.4)
+
+    kde = stats.gaussian_kde(y)
+    yy = np.linspace(ymin, ymax, 1000)
+    axl.plot(kde(yy), yy, color=cl[n], alpha = 0.4)
+
+# Copy legend object from scatter plot to lower left subplot and display:
+# NB 'scatterpoints = 1' customises legend box to show only 1 handle (icon) per label 
+handles, labels = ax.get_legend_handles_labels()
+axc.legend(handles, labels, title = headers[5], scatterpoints = 1, loc = 'upper right', fontsize = 9)
+
+plt.show()
+
+#----
+# end
+#----
+
+
+#-----------------------------------------------------------
+# Scatterplot with marginal densities by group using seaborn
+#-----------------------------------------------------------
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn import datasets
+import pandas as pd
+import numpy as np
+
+
+# Convert 'iris.data' numpy array to 'iris.dataframe' pandas dataframe
+# complete the iris dataset by adding species
+iris = datasets.load_iris()
+iris = pd.DataFrame(
+    data= np.c_[iris['data'], iris['target']],
+    columns= iris['feature_names'] + ['target']
+    )
+
+species = []
+
+for i in range(len(iris['target'])):
+    if iris['target'][i] == 0:
+        species.append("setosa")
+    elif iris['target'][i] == 1:
+        species.append('versicolor')
+    else:
+        species.append('virginica')
+
+
+iris['species'] = species
+iris
+
+sns.jointplot(data=iris, x="sepal length (cm)", y="sepal width (cm)", hue="species")
+
+#----
+# end
+#----
 
 #-----------------
 # Time series plot
